@@ -53,7 +53,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func ws(conn *websocket.Conn) {
-	// wr := bufio.NewReader(conn)
 	buf := make([]byte, 1000)
 	for {
 		n, err := conn.Read(buf)
