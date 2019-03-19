@@ -5,3 +5,6 @@
 server.key
 server.csr
 server.crt
+server.bundle-crt
+ca.key
+ca.crt
