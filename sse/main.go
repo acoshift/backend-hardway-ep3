@@ -18,29 +18,20 @@ func index(w http.ResponseWriter, r *http.Request) {
 	// language=HTML
 	w.Write([]byte(`
 <!doctype html>
-<title>Long Pulling</title>
+<title>SSE</title>
 <h1><span id="current"></span></h1>
 <button onclick="incr()">Incr</button>
 <script>
 	const current = document.getElementById('current')
-
-	function reload (long) {
-		fetch('/get?long=' + (long || 0))
-			.then((resp) => resp.text())
-			.then((resp) => {
-				current.innerText = resp
-				reload(1)
-			})
-			.catch(() => {
-				reload(1)
-			})
-	}
 	
 	function incr () {
 		fetch('/incr')
 	}
 
-	reload()
+	const source = new EventSource('/get')
+	source.onmessage = (event) => {
+		current.innerText = event.data
+	}
 </script>
 `))
 }
@@ -51,20 +42,24 @@ var (
 )
 
 func get(w http.ResponseWriter, r *http.Request) {
-	long := r.FormValue("long") == "1"
-	if !long {
-		fmt.Fprintln(w, atomic.LoadUint64(&current))
-		return
-	}
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(http.StatusOK)
 
-	ch := make(chan struct{})
+	f := w.(http.Flusher)
+	fmt.Fprintf(w, "data: %d\n\n", atomic.LoadUint64(&current))
+	f.Flush()
+
+	ch := make(chan struct{}, 1)
 	noti.Notify(ch)
-
-	select {
-	case <-r.Context().Done():
-		noti.Cancel(ch)
-	case <-ch:
-		fmt.Fprintln(w, atomic.LoadUint64(&current))
+	for {
+		select {
+		case <-r.Context().Done():
+			noti.Cancel(ch)
+		case <-ch:
+			fmt.Fprintf(w, "data: %d\n\n", atomic.LoadUint64(&current))
+			f.Flush()
+		}
 	}
 }
 
@@ -87,9 +82,8 @@ func (n *notifier) Notify(c chan<- struct{}) {
 func (n *notifier) Send() {
 	n.Lock()
 	for _, c := range n.cs {
-		close(c)
+		c <- struct{}{}
 	}
-	n.cs = nil
 	n.Unlock()
 }
 
