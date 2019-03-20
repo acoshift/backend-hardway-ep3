@@ -30,8 +30,8 @@ func main() {
 	}
 
 	r := bufio.NewReader(conn)
-	r.ReadLine()
-	r.ReadLine()
+	r.ReadLine() // HTTP/1.1 200 OK
+	r.ReadLine() // \n
 
 	fmt.Println("< connected")
 	fmt.Println("----------------")

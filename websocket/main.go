@@ -96,6 +96,11 @@ func websocket(w http.ResponseWriter, r *http.Request) {
 
 	conn.SetDeadline(time.Time{}) // no timeout
 
+	// for {
+	// 	var buf [1]byte
+	// 	conn.Read(buf[:])
+	// 	fmt.Printf("%x ", buf[0])
+	// }
 	io.Copy(os.Stdout, conn)
 }
 

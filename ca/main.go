@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+// openssl x509 -in ca.crt -text -noout
 func main() {
 	key, _ := rsa.GenerateKey(rand.Reader, 2048)
 	serial, _ := rand.Int(rand.Reader, new(big.Int).Exp(big.NewInt(2), big.NewInt(159), nil))
@@ -21,7 +22,7 @@ func main() {
 		SerialNumber: serial,
 		Subject: pkix.Name{
 			CommonName: "Example Co., Ltd.",
-			Country:    []string{"Thailand"},
+			Country:    []string{"TH"},
 			Province:   []string{"Bangkok"},
 		},
 		NotBefore:          now.UTC(),

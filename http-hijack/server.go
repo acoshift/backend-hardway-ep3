@@ -40,14 +40,7 @@ func sudo(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	// tell client that hijack completed
-	if r.ProtoMajor <= 1 {
-		fmt.Fprintf(wr, "%s 200 OK\n", r.Proto)
-	} else if r.ProtoMajor == 2 {
-		fmt.Fprintf(wr, "%s 200\n", r.Proto)
-	} else {
-		// unsupported proto
-		return
-	}
+	fmt.Fprintln(wr, "HTTP/1.1 200 OK")
 	fmt.Fprintln(wr)
 
 	fmt.Println("hijacked connection")
