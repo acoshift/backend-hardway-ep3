@@ -13,6 +13,8 @@ var reg = prometheus.NewRegistry()
 
 // docker run --name prom -d -p 9090:9090 -v $(pwd)/prom/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
 // getent hosts host.docker.internal | cut -d' ' -f1
+// docker run --name grafana -d -p 3000:3000 grafana/grafana
+// grafana default user/password = admin/admin
 func main() {
 	reg.MustRegister(prometheus.NewGoCollector())
 	reg.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{
