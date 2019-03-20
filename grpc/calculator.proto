@@ -1,0 +1,17 @@
+syntax = "proto3";
+package calculator;
+
+service Calculator {
+	rpc Add(Operand) returns (Result) {}
+	rpc Mul(Operand) returns (Result) {}
+	rpc Div(Operand) returns (Result) {}
+}
+
+message Result {
+	int64 Result = 1;
+}
+
+message Operand {
+	int64 X = 1;
+	int64 Y = 2;
+}
