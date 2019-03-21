@@ -10,6 +10,7 @@ import (
 
 func main() {
 	h := http.HandlerFunc(api)
+	http.Handle("/api", h)
 	http.Handle("/cache-control", cacheControl(h))
 	http.Handle("/last-modified", lastModified(h))
 	http.Handle("/etag", etag(h))
@@ -25,6 +26,7 @@ func api(w http.ResponseWriter, r *http.Request) {
 
 func cacheControl(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(25*time.Millisecond)
 		w.Header().Set("Cache-Control", "public, max-age=600")
 		h.ServeHTTP(w, r)
 	})
@@ -33,17 +35,19 @@ func cacheControl(h http.Handler) http.Handler {
 func lastModified(h http.Handler) http.Handler {
 	t := time.Now().Format(http.TimeFormat)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(25*time.Millisecond)
+		w.Header().Set("Last-Modified", t)
 		if r.Header.Get("If-Modified-Since") == t {
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
-		w.Header().Set("Last-Modified", t)
 		h.ServeHTTP(w, r)
 	})
 }
 
 func etag(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(25*time.Millisecond)
 		nw := etagResponseWriter{
 			ResponseWriter: w,
 		}
@@ -77,11 +81,11 @@ func (w *etagResponseWriter) Write(p []byte) (int, error) {
 func (w *etagResponseWriter) Flush(ifNoneMatch string) {
 	rawDigest := sha256.Sum256(w.buf.Bytes())
 	digest := "\"" + base64.RawStdEncoding.EncodeToString(rawDigest[:]) + "\""
+	w.Header().Set("ETag", digest)
 	if digest == ifNoneMatch {
 		w.ResponseWriter.WriteHeader(http.StatusNotModified)
 		return
 	}
-	w.Header().Set("ETag", digest)
 	w.ResponseWriter.WriteHeader(w.code)
 	w.buf.WriteTo(w.ResponseWriter)
 }
