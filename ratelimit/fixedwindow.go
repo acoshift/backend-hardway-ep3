@@ -57,6 +57,7 @@ func fixedWindowRateLimiter(rate int, unit time.Duration) func(h http.Handler) h
 		return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 			addr, _, _ := net.SplitHostPort(r.RemoteAddr)
 			if !take(addr) {
+				// w.Header().Set("Retry-After", "1")
 				http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 				return
 			}

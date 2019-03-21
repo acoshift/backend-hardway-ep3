@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	pb "github.com/acoshift/backend-hardway-ep3/grpc/calculator"
 )
@@ -24,6 +25,7 @@ func main() {
 
 	client := pb.NewCalculatorClient(conn)
 	ctx := context.Background()
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("authorization", "super_secret"))
 
 	fmt.Println("4 + 3 =")
 	result, err := client.Add(ctx, &pb.Operand{X: 4, Y: 3})

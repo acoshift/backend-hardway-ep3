@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
 	pb "github.com/acoshift/backend-hardway-ep3/grpc/calculator"
@@ -19,7 +20,7 @@ func main() {
 	}
 	defer lis.Close()
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(auth))
 	pb.RegisterCalculatorServer(grpcServer, &calculatorServer{})
 	grpcServer.Serve(lis)
 }
@@ -42,4 +43,14 @@ func (s *calculatorServer) Div(ctx context.Context, op *pb.Operand) (*pb.Result,
 	}
 	result := op.GetX() / op.GetY()
 	return &pb.Result{Result: result}, nil
+}
+
+func auth(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	tokens := md.Get("authorization")
+	if len(tokens) == 0 || tokens[0] != "super_secret" {
+		return nil, status.Errorf(codes.Unauthenticated, "Unauthenticated")
+	}
+
+	return handler(ctx, req)
 }
