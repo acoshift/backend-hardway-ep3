@@ -58,4 +58,12 @@ func main() {
 	} else {
 		fmt.Println(result.Result)
 	}
+
+	fmt.Println("1 + 2 + 3 + 4 + 5 =")
+	result, err = client.Sum(ctx, &pb.Sequence{X: []int64{1, 2, 3, 4, 5}})
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(result.Result)
+	}
 }

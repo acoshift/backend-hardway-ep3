@@ -45,6 +45,14 @@ func (s *calculatorServer) Div(ctx context.Context, op *pb.Operand) (*pb.Result,
 	return &pb.Result{Result: result}, nil
 }
 
+func (s *calculatorServer) Sum(ctx context.Context, op *pb.Sequence) (*pb.Result, error) {
+	var result int64
+	for _, x := range op.GetX() {
+		result += x
+	}
+	return &pb.Result{Result: result}, nil
+}
+
 func auth(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	tokens := md.Get("authorization")

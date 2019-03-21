@@ -110,24 +110,66 @@ func (m *Operand) GetY() int64 {
 	return 0
 }
 
+type Sequence struct {
+	X                    []int64  `protobuf:"varint,1,rep,packed,name=X,proto3" json:"X,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Sequence) Reset()         { *m = Sequence{} }
+func (m *Sequence) String() string { return proto.CompactTextString(m) }
+func (*Sequence) ProtoMessage()    {}
+func (*Sequence) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c686ea360062a8cf, []int{2}
+}
+
+func (m *Sequence) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Sequence.Unmarshal(m, b)
+}
+func (m *Sequence) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Sequence.Marshal(b, m, deterministic)
+}
+func (m *Sequence) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Sequence.Merge(m, src)
+}
+func (m *Sequence) XXX_Size() int {
+	return xxx_messageInfo_Sequence.Size(m)
+}
+func (m *Sequence) XXX_DiscardUnknown() {
+	xxx_messageInfo_Sequence.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Sequence proto.InternalMessageInfo
+
+func (m *Sequence) GetX() []int64 {
+	if m != nil {
+		return m.X
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Result)(nil), "calculator.Result")
 	proto.RegisterType((*Operand)(nil), "calculator.Operand")
+	proto.RegisterType((*Sequence)(nil), "calculator.Sequence")
 }
 
 func init() { proto.RegisterFile("calculator.proto", fileDescriptor_c686ea360062a8cf) }
 
 var fileDescriptor_c686ea360062a8cf = []byte{
-	// 144 bytes of a gzipped FileDescriptorProto
+	// 175 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x48, 0x4e, 0xcc, 0x49,
 	0x2e, 0xcd, 0x49, 0x2c, 0xc9, 0x2f, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x42, 0x88,
 	0x28, 0x29, 0x70, 0xb1, 0x05, 0xa5, 0x16, 0x97, 0xe6, 0x94, 0x08, 0x89, 0xc1, 0x58, 0x12, 0x8c,
 	0x0a, 0x8c, 0x1a, 0xcc, 0x41, 0x50, 0x9e, 0x92, 0x2a, 0x17, 0xbb, 0x7f, 0x41, 0x6a, 0x51, 0x62,
 	0x5e, 0x8a, 0x10, 0x0f, 0x17, 0x63, 0x04, 0x54, 0x96, 0x31, 0x02, 0xc4, 0x8b, 0x94, 0x60, 0x82,
-	0xf0, 0x22, 0x8d, 0x16, 0x31, 0x72, 0x71, 0x39, 0xc3, 0xcd, 0x15, 0x32, 0xe0, 0x62, 0x76, 0x4c,
-	0x49, 0x11, 0x12, 0xd6, 0x43, 0xb2, 0x1d, 0x6a, 0x8c, 0x94, 0x10, 0xb2, 0x20, 0xd4, 0x16, 0x06,
-	0x90, 0x0e, 0xdf, 0xd2, 0x1c, 0x12, 0x75, 0xb8, 0x64, 0x96, 0x91, 0xa0, 0x23, 0x89, 0x0d, 0x1c,
-	0x00, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb6, 0x83, 0xf3, 0x91, 0x14, 0x01, 0x00, 0x00,
+	0xf0, 0x22, 0x95, 0x24, 0xb8, 0x38, 0x82, 0x53, 0x0b, 0x4b, 0x53, 0xf3, 0x92, 0x53, 0x61, 0xea,
+	0x98, 0xc1, 0xea, 0x8c, 0xae, 0x32, 0x72, 0x71, 0x39, 0xc3, 0x6d, 0x14, 0x32, 0xe0, 0x62, 0x76,
+	0x4c, 0x49, 0x11, 0x12, 0xd6, 0x43, 0x72, 0x17, 0xd4, 0x02, 0x29, 0x21, 0x64, 0x41, 0xa8, 0xfd,
+	0x0c, 0x20, 0x1d, 0xbe, 0xa5, 0x39, 0x24, 0xea, 0x70, 0xc9, 0x2c, 0x23, 0x45, 0x87, 0x21, 0x17,
+	0x73, 0x70, 0x69, 0xae, 0x90, 0x08, 0xb2, 0x24, 0xcc, 0x3f, 0xd8, 0xb5, 0x24, 0xb1, 0x81, 0x43,
+	0xd3, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xcd, 0x77, 0x87, 0xd7, 0x61, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -145,6 +187,7 @@ type CalculatorClient interface {
 	Add(ctx context.Context, in *Operand, opts ...grpc.CallOption) (*Result, error)
 	Mul(ctx context.Context, in *Operand, opts ...grpc.CallOption) (*Result, error)
 	Div(ctx context.Context, in *Operand, opts ...grpc.CallOption) (*Result, error)
+	Sum(ctx context.Context, in *Sequence, opts ...grpc.CallOption) (*Result, error)
 }
 
 type calculatorClient struct {
@@ -182,11 +225,21 @@ func (c *calculatorClient) Div(ctx context.Context, in *Operand, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *calculatorClient) Sum(ctx context.Context, in *Sequence, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/calculator.Calculator/Sum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalculatorServer is the server API for Calculator service.
 type CalculatorServer interface {
 	Add(context.Context, *Operand) (*Result, error)
 	Mul(context.Context, *Operand) (*Result, error)
 	Div(context.Context, *Operand) (*Result, error)
+	Sum(context.Context, *Sequence) (*Result, error)
 }
 
 // UnimplementedCalculatorServer can be embedded to have forward compatible implementations.
@@ -201,6 +254,9 @@ func (*UnimplementedCalculatorServer) Mul(ctx context.Context, req *Operand) (*R
 }
 func (*UnimplementedCalculatorServer) Div(ctx context.Context, req *Operand) (*Result, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Div not implemented")
+}
+func (*UnimplementedCalculatorServer) Sum(ctx context.Context, req *Sequence) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sum not implemented")
 }
 
 func RegisterCalculatorServer(s *grpc.Server, srv CalculatorServer) {
@@ -261,6 +317,24 @@ func _Calculator_Div_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Calculator_Sum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Sequence)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculatorServer).Sum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculator.Calculator/Sum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculatorServer).Sum(ctx, req.(*Sequence))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Calculator_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "calculator.Calculator",
 	HandlerType: (*CalculatorServer)(nil),
@@ -276,6 +350,10 @@ var _Calculator_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Div",
 			Handler:    _Calculator_Div_Handler,
+		},
+		{
+			MethodName: "Sum",
+			Handler:    _Calculator_Sum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
